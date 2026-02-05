@@ -80,24 +80,26 @@ export class ObjectListTool extends BaseTool {
                 }
             });
             const response = await this.client.get(`/crm/v3/objects/${args.objectType}?${queryParams.toString()}`);
+            const resultData = {
+                results: response.results.map(item => ({
+                    id: item.id,
+                    properties: item.properties,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    archived: item.archived,
+                    archivedAt: item.archivedAt,
+                    associations: item.associations,
+                })),
+                paging: response.paging,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            results: response.results.map(item => ({
-                                id: item.id,
-                                properties: item.properties,
-                                createdAt: item.createdAt,
-                                updatedAt: item.updatedAt,
-                                archived: item.archived,
-                                archivedAt: item.archivedAt,
-                                associations: item.associations,
-                            })),
-                            paging: response.paging,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {

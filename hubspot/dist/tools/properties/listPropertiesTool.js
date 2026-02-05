@@ -56,16 +56,18 @@ export class PropertiesListTool extends BaseTool {
                 description: property.description,
                 groupName: property.groupName,
             }));
+            const resultData = {
+                results: filteredResults,
+                paging: response.paging,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            results: filteredResults,
-                            paging: response.paging,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {

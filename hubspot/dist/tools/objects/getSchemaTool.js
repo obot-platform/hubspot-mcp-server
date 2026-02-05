@@ -41,6 +41,7 @@ export class GetSchemasTool extends BaseTool {
                 name: schema.name,
                 labels: schema.labels,
             }));
+            const resultData = { results: simplifiedResults };
             return {
                 content: [
                     {
@@ -49,9 +50,10 @@ export class GetSchemasTool extends BaseTool {
                     },
                     {
                         type: 'text',
-                        text: JSON.stringify({ results: simplifiedResults }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {

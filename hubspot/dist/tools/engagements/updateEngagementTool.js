@@ -76,17 +76,19 @@ export class UpdateEngagementTool extends BaseTool {
             const response = await this.client.patch(`/engagements/v1/engagements/${engagementId}`, {
                 body: requestBody,
             });
+            const result = {
+                status: 'success',
+                engagement: response,
+                message: `Successfully updated engagement ${engagementId}`,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            status: 'success',
-                            engagement: response,
-                            message: `Successfully updated engagement ${engagementId}`,
-                        }, null, 2),
+                        text: JSON.stringify(result, null, 2),
                     },
                 ],
+                structuredContent: result,
             };
         }
         catch (error) {

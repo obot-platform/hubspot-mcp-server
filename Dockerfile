@@ -1,4 +1,4 @@
-FROM ghcr.io/obot-platform/mcp-images-phat:main
+FROM ghcr.io/obot-platform/mcp-images/phat:main
 
 WORKDIR /app
 
@@ -32,6 +32,6 @@ RUN chown 1000 /nanobot.yaml
 
 ENTRYPOINT ["nanobot"]
 
-CMD ["run", "--listen-address", ":8099", "-e", "PRIVATE_APP_ACCESS_TOKEN", "/nanobot.yaml"]
+CMD ["run", "--listen-address", ":8099", "-e", "PRIVATE_APP_ACCESS_TOKEN", "--config", "/nanobot.yaml"]
 
 USER 1000

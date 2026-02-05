@@ -54,16 +54,18 @@ export class WorkflowsListTool extends BaseTool {
                 params,
             });
             const filteredResults = response.results;
+            const resultData = {
+                results: filteredResults,
+                paging: response.paging,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            results: filteredResults,
-                            paging: response.paging,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {
