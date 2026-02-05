@@ -5,6 +5,7 @@ export const HUBSPOT_OBJECT_TYPES = [
     'contacts',
     'courses',
     'deals',
+    'emails',
     'leads',
     'line_items',
     'listings',

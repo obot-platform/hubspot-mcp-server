@@ -58,12 +58,18 @@ export class UserCredentialsTool extends BaseTool {
             const ownerInfo = await this.client
                 .get(`/crm/v3/owners/${tokenInfo.userId}?idProperty=userId&archived=false`)
                 .catch(() => null);
+            const userDetails = {
+                tokenInfo,
+                ownerInfo,
+                accountInfo,
+            };
             return {
                 content: [
                     { type: 'text', text: '- Token Info: ' + JSON.stringify(tokenInfo, null, 2) },
                     { type: 'text', text: '- OwnerInfo: ' + JSON.stringify(ownerInfo, null, 2) },
                     { type: 'text', text: '- AccountInfo: ' + JSON.stringify(accountInfo, null, 2) },
                 ],
+                structuredContent: userDetails,
             };
         }
         catch (error) {

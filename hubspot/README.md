@@ -114,26 +114,43 @@ Once set up, try these example prompts:
 
 This MCP server provides a set of tools for interacting with the HubSpot CRM API.
 
-| Category     | Tool Name                           | Description                                                                                                                                      |
-| ------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| OAuth        | hubspot-get-user-details            | Authenticates the current HubSpot private app access token, providing user information, hub details, authorized scopes, and account information. |
-| Objects      | hubspot-list-objects                | Retrieves a paginated list of CRM records for a specified object type.                                                                           |
-| Objects      | hubspot-search-objects              | Performs filtered searches across CRM records using complex criteria and property-based filtering.                                               |
-| Objects      | hubspot-batch-create-objects        | Creates multiple CRM records of the same object type in a single API call.                                                                       |
-| Objects      | hubspot-batch-update-objects        | Updates multiple existing CRM records with new property values in a single API call.                                                             |
-| Objects      | hubspot-batch-read-objects          | Retrieves multiple CRM records by their IDs in a single batch operation.                                                                         |
-| Objects      | hubspot-get-schemas                 | Retrieves available custom object schemas with their objectTypeId and definitions.                                                               |
-| Properties   | hubspot-list-properties             | Retrieves the complete catalog of properties defined for any CRM object type.                                                                    |
-| Properties   | hubspot-get-property                | Retrieves detailed information about a specific property definition.                                                                             |
-| Properties   | hubspot-create-property             | Creates new custom properties for CRM object types.                                                                                              |
-| Properties   | hubspot-update-property             | Updates settings for existing custom properties.                                                                                                 |
-| Associations | hubspot-batch-create-associations   | Establishes multiple relationships between CRM records across different object types.                                                            |
-| Associations | hubspot-list-associations           | Retrieves existing relationships between a specific record and other associated records.                                                         |
-| Associations | hubspot-get-association-definitions | Retrieves valid association types and labels between specific object types.                                                                      |
-| Engagements  | hubspot-create-engagement           | Creates engagements (Notes or Tasks) associated with contacts, companies, deals, or tickets.                                                     |
-| Engagements  | hubspot-get-engagement              | Retrieves engagement details by ID.                                                                                                              |
-| Engagements  | hubspot-update-engagement           | Updates an existing engagement with new information.                                                                                             |
-| Workflows    | hubspot-list-workflows              | Retrieves a paginated list of workflows                                                                                                          |
-| Workflows    | hubspot-get-workflow                | Retrieves detailed information about a specific workflow, including actions, enrollment criteria, and scheduling.                                |
-| Links        | hubspot-generate-feedback-link      | Generates a feedback link for reporting tool issues or providing feedback.                                                                       |
-| Links        | hubspot-get-link                    | Generates HubSpot UI URLs to directly access records in the HubSpot interface.                                                                   |
+| Category     | Tool Name                           | Description                                                                                                                                                                               |
+| ------------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OAuth        | hubspot-get-user-details            | Authenticates the current HubSpot private app access token, providing user information, hub details, authorized scopes, and account information.                                          |
+| Objects      | hubspot-list-objects                | Retrieves a paginated list of CRM records for a specified object type.                                                                                                                    |
+| Objects      | hubspot-search-objects              | Performs filtered searches across CRM records using complex criteria and property-based filtering.                                                                                        |
+| Objects      | hubspot-batch-create-objects        | Creates multiple CRM records of the same object type in a single API call.                                                                                                                |
+| Objects      | hubspot-batch-update-objects        | Updates multiple existing CRM records with new property values in a single API call.                                                                                                      |
+| Objects      | hubspot-batch-read-objects          | Retrieves multiple CRM records by their IDs in a single batch operation.                                                                                                                  |
+| Objects      | hubspot-get-schemas                 | Retrieves available custom object schemas with their objectTypeId and definitions.                                                                                                        |
+| Properties   | hubspot-list-properties             | Retrieves the complete catalog of properties defined for any CRM object type.                                                                                                             |
+| Properties   | hubspot-get-property                | Retrieves detailed information about a specific property definition.                                                                                                                      |
+| Properties   | hubspot-create-property             | Creates new custom properties for CRM object types.                                                                                                                                       |
+| Properties   | hubspot-update-property             | Updates settings for existing custom properties.                                                                                                                                          |
+| Associations | hubspot-batch-create-associations   | Establishes multiple relationships between CRM records across different object types.                                                                                                     |
+| Associations | hubspot-list-associations           | Retrieves existing relationships between a specific record and other associated records.                                                                                                  |
+| Associations | hubspot-get-association-definitions | Retrieves valid association types and labels between specific object types.                                                                                                               |
+| Emails       | hubspot-list-email-templates        | Lists HubSpot marketing email templates with fuzzy matching. Requires the `content` scope.                                                                                                 |
+| Emails       | hubspot-list-message-templates      | Lists CRM message templates shown under CRM → Message templates.                                                                                                                           |
+| Emails       | hubspot-list-email-events           | Lists marketing/transactional email events from the Email Events API (use this for marketing email activity, not CRM `emails` objects).                                                    |
+| Emails       | hubspot-send-marketing-email        | Sends a real marketing/transactional email via the Single Send API. Requires Marketing Hub Enterprise and `marketing-email` or `transactional-email` scopes.                              |
+| Emails       | hubspot-log-email-engagement        | Logs a CRM email engagement record (does not send). Useful for associating emails to contacts/companies.                                                                                   |
+| Engagements  | hubspot-create-engagement           | Creates engagements (Notes, Tasks, or Emails) associated with contacts, companies, deals, or tickets.                                                                                     |
+| Engagements  | hubspot-get-engagement              | Retrieves engagement details by ID.                                                                                                                                                       |
+| Engagements  | hubspot-update-engagement           | Updates an existing engagement with new information.                                                                                                                                      |
+| Workflows    | hubspot-list-workflows              | Retrieves a paginated list of workflows.                                                                                                                                                  |
+| Workflows    | hubspot-get-workflow                | Retrieves detailed information about a specific workflow, including actions, enrollment criteria, and scheduling.                                                                         |
+| Links        | hubspot-generate-feedback-link      | Generates a feedback link for reporting tool issues or providing feedback.                                                                                                                |
+| Links        | hubspot-get-link                    | Generates HubSpot UI URLs to directly access records in the HubSpot interface.                                                                                                            |
+
+## Required OAuth Scopes
+
+Enable only the scopes you need. Key scopes used by this server:
+
+- CRM objects (read/write as needed): `crm.objects.contacts.*`, `crm.objects.companies.*`, `crm.objects.deals.*`, `crm.objects.tickets.*`, `crm.objects.emails.*`, and other object types you access.
+- CRM associations: `crm.objects.associations.read`, `crm.objects.associations.write`.
+- Engagements: `crm.objects.engagements.read`, `crm.objects.engagements.write`.
+- Properties/schemas: `crm.schemas.read`, `crm.schemas.write`.
+- Marketing email templates: `content` (required for `hubspot-list-email-templates`).
+- Marketing/transactional email sends + events: `marketing-email` or `transactional-email` (required for `hubspot-send-marketing-email` and `hubspot-list-email-events`).
+- Workflows: `automation` (required for workflow list/get tools).

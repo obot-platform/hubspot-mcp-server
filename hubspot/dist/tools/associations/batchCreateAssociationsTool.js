@@ -74,6 +74,7 @@ export class BatchCreateAssociationsTool extends BaseTool {
                         text: JSON.stringify(response, null, 2),
                     },
                 ],
+                structuredContent: response,
             };
         }
         catch (error) {

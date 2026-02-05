@@ -125,23 +125,25 @@ export class ObjectSearchTool extends BaseTool {
             const response = await this.client.post(`/crm/v3/objects/${args.objectType}/search`, {
                 body: cleanRequestBody,
             });
+            const resultData = {
+                results: response.results.map(item => ({
+                    id: item.id,
+                    properties: item.properties,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    archived: item.archived,
+                    archivedAt: item.archivedAt,
+                })),
+                paging: response.paging,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            results: response.results.map(item => ({
-                                id: item.id,
-                                properties: item.properties,
-                                createdAt: item.createdAt,
-                                updatedAt: item.updatedAt,
-                                archived: item.archived,
-                                archivedAt: item.archivedAt,
-                            })),
-                            paging: response.paging,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {

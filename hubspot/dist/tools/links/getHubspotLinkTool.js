@@ -62,6 +62,7 @@ export class GetHubspotLinkTool extends BaseTool {
                     text: JSON.stringify(urlResults, null, 2),
                 },
             ],
+            structuredContent: urlResults,
         };
     }
     isValidObjectTypeId(objectTypeId) {

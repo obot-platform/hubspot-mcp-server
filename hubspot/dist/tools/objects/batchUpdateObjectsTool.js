@@ -58,26 +58,28 @@ export class BatchUpdateObjectsTool extends BaseTool {
                     inputs: args.inputs,
                 },
             });
+            const resultData = {
+                status: response.status,
+                results: response.results.map(result => ({
+                    id: result.id,
+                    properties: result.properties,
+                    createdAt: result.createdAt,
+                    updatedAt: result.updatedAt,
+                    archived: result.archived,
+                    archivedAt: result.archivedAt,
+                })),
+                requestedAt: response.requestedAt,
+                startedAt: response.startedAt,
+                completedAt: response.completedAt,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            status: response.status,
-                            results: response.results.map(result => ({
-                                id: result.id,
-                                properties: result.properties,
-                                createdAt: result.createdAt,
-                                updatedAt: result.updatedAt,
-                                archived: result.archived,
-                                archivedAt: result.archivedAt,
-                            })),
-                            requestedAt: response.requestedAt,
-                            startedAt: response.startedAt,
-                            completedAt: response.completedAt,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {

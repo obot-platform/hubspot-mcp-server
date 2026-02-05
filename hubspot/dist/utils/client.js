@@ -11,6 +11,11 @@ export class HubSpotClient {
         if (!this.accessToken) {
             throw new Error('HubSpot access token is required. Set PRIVATE_APP_ACCESS_TOKEN in your environment variables and retry.');
         }
+        // Debug: log masked token to verify env var is picked up
+        const masked = this.accessToken.length > 10
+            ? `${this.accessToken.slice(0, 5)}...${this.accessToken.slice(-5)}`
+            : '(token too short)';
+        console.error(`[HubSpotClient] Using token: ${masked}`);
     }
     /**
      * Make a request to the HubSpot API

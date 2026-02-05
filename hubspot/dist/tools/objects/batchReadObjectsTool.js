@@ -4,7 +4,7 @@ import { BaseTool } from '../baseTool.js';
 import HubSpotClient from '../../utils/client.js';
 import { HUBSPOT_OBJECT_TYPES } from '../../types/objectTypes.js';
 const ObjectReadInputSchema = z.object({
-    id: z.string().describe('ID of the object to read'),
+    id: z.union([z.string(), z.number()]).describe('ID of the object to read'),
 });
 const BatchReadObjectsSchema = z.object({
     objectType: z
@@ -50,8 +50,26 @@ export class BatchReadObjectsTool extends BaseTool {
     }
     async process(args) {
         try {
+            const normalizeId = (value) => {
+                if (typeof value === 'number') {
+                    return String(value);
+                }
+                if (typeof value === 'string') {
+                    if (/e\+?\d+/i.test(value)) {
+                        const num = Number(value);
+                        if (!Number.isNaN(num)) {
+                            return String(num);
+                        }
+                    }
+                    return value;
+                }
+                return String(value);
+            };
             const requestBody = {
-                inputs: args.inputs,
+                inputs: args.inputs.map(input => ({
+                    ...input,
+                    id: normalizeId(input.id),
+                })),
             };
             if (args.properties && args.properties.length > 0) {
                 requestBody.properties = args.properties;
@@ -62,39 +80,41 @@ export class BatchReadObjectsTool extends BaseTool {
             const response = await this.client.post(`/crm/v3/objects/${args.objectType}/batch/read`, {
                 body: requestBody,
             });
+            const resultData = {
+                status: response.status,
+                results: response.results.map(result => {
+                    const formattedResult = {
+                        id: result.id,
+                        properties: result.properties,
+                        createdAt: result.createdAt,
+                        updatedAt: result.updatedAt,
+                    };
+                    if (result.propertiesWithHistory) {
+                        formattedResult.propertiesWithHistory = result.propertiesWithHistory;
+                    }
+                    if (result.archived !== undefined) {
+                        formattedResult.archived = result.archived;
+                    }
+                    if (result.archivedAt) {
+                        formattedResult.archivedAt = result.archivedAt;
+                    }
+                    if (result.objectWriteTraceId) {
+                        formattedResult.objectWriteTraceId = result.objectWriteTraceId;
+                    }
+                    return formattedResult;
+                }),
+                requestedAt: response.requestedAt,
+                startedAt: response.startedAt,
+                completedAt: response.completedAt,
+            };
             return {
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify({
-                            status: response.status,
-                            results: response.results.map(result => {
-                                const formattedResult = {
-                                    id: result.id,
-                                    properties: result.properties,
-                                    createdAt: result.createdAt,
-                                    updatedAt: result.updatedAt,
-                                };
-                                if (result.propertiesWithHistory) {
-                                    formattedResult.propertiesWithHistory = result.propertiesWithHistory;
-                                }
-                                if (result.archived !== undefined) {
-                                    formattedResult.archived = result.archived;
-                                }
-                                if (result.archivedAt) {
-                                    formattedResult.archivedAt = result.archivedAt;
-                                }
-                                if (result.objectWriteTraceId) {
-                                    formattedResult.objectWriteTraceId = result.objectWriteTraceId;
-                                }
-                                return formattedResult;
-                            }),
-                            requestedAt: response.requestedAt,
-                            startedAt: response.startedAt,
-                            completedAt: response.completedAt,
-                        }, null, 2),
+                        text: JSON.stringify(resultData, null, 2),
                     },
                 ],
+                structuredContent: resultData,
             };
         }
         catch (error) {
